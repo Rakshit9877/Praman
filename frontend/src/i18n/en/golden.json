@@ -1,0 +1,37 @@
+{
+  "landing": {
+    "title": "Rakesh",
+    "subtitle": "No proof — Unskilled",
+    "wage": "₹827/day",
+    "start": "Start verification"
+  },
+  "voice": {
+    "title": "Tell us about your work",
+    "instruction": "Press the mic and speak in Hindi.",
+    "recording": "Recording...",
+    "processing": "Processing voice...",
+    "next": "Next Step"
+  },
+  "register": {
+    "title": "Upload Hazri Register",
+    "instruction": "Take a photo of your attendance page.",
+    "capture": "Open Camera",
+    "processing": "Reading register...",
+    "next": "Next Step"
+  },
+  "attest": {
+    "title": "Employer Attestation",
+    "instruction": "Show this QR code to your Thekedar to confirm.",
+    "waiting": "Waiting for confirmation...",
+    "confirmed": "Attestation confirmed!"
+  },
+  "passport": {
+    "title": "Generating Passport",
+    "processing": "Issuing secure passport...",
+    "success": "Passport Issued"
+  },
+  "errors": {
+    "network": "Network error occurred.",
+    "retry": "Try Again"
+  }
+}
