@@ -9,6 +9,7 @@ const ProofChainView = React.lazy(() => import('./features/verify/ProofChainView
 const TimelineView = React.lazy(() => import('./features/verify/TimelineView').then(m => ({ default: m.TimelineView })));
 const ScannerView = React.lazy(() => import('./features/attest/ScannerView').then(m => ({ default: m.ScannerView })));
 const EvidenceWebView = React.lazy(() => import('./features/verify/EvidenceWebView').then(m => ({ default: m.EvidenceWebView })));
+const DemoFlow = React.lazy(() => import('./features/golden/DemoFlow').then(m => ({ default: m.DemoFlow })));
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route path="/timeline" element={<TimelineView />} />
             <Route path="/scanner" element={<ScannerView />} />
             <Route path="/evidence-web" element={<EvidenceWebView />} />
+            <Route path="/demo/*" element={<DemoFlow />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
