@@ -1,6 +1,175 @@
 @import "tailwindcss";
 
-body {
-  background-color: #f9fafb;
-  color: #111827;
+@theme {
+  --color-primary-fixed-dim: #7cd9a6;
+  --color-error: #ffb4ab;
+  --color-on-primary-container: #005d3a;
+  --color-secondary-fixed-dim: #ffb4a2;
+  --color-on-surface-variant: #bec9bf;
+  --color-inverse-surface: #e4e2e1;
+  --color-surface-variant: #343535;
+  --color-outline: #88948a;
+  --color-on-error: #690005;
+  --color-tertiary-container: #f2b880;
+  --color-error-container: #93000a;
+  --color-surface-bright: #393939;
+  --color-on-tertiary: #4a2800;
+  --color-on-primary-fixed-variant: #005233;
+  --color-on-tertiary-container: #714719;
+  --color-on-background: #e4e2e1;
+  --color-on-primary-fixed: #002112;
+  --color-primary: #95f3be;
+  --color-secondary: #ffb4a2;
+  --color-on-secondary-fixed-variant: #83260e;
+  --color-inverse-primary: #006c45;
+  --color-surface-container-lowest: #070808;
+  --color-secondary-container: #862810;
+  --color-primary-fixed: #98f6c1;
+  --color-on-tertiary-fixed-variant: #653e10;
+  --color-on-tertiary-fixed: #2d1600;
+  --color-tertiary: #ffd8b6;
+  --color-surface: #121413;
+  --color-surface-container: #171918;
+  --color-outline-variant: #2a322c;
+  --color-on-secondary: #621100;
+  --color-on-primary: #003822;
+  --color-inverse-on-surface: #303030;
+  --color-primary-container: #79d6a3;
+  --color-surface-container-low: #111312;
+  --color-surface-container-highest: #242826;
+  --color-on-secondary-container: #ffa088;
+  --color-on-secondary-fixed: #3c0700;
+  --color-surface-tint: #7cd9a6;
+  --color-tertiary-fixed: #ffdcbe;
+  --color-secondary-fixed: #ffdad2;
+  --color-surface-dim: #070808;
+  --color-background: #070808;
+  --color-on-error-container: #ffdad6;
+  --color-surface-container-high: #1c201e;
+  --color-tertiary-fixed-dim: #f5bb83;
+  --color-on-surface: #e4e2e1;
+  --color-terracotta: #E76F51;
+  --color-terracotta-muted: #853a28;
+  --color-unverified-gray: #5E6561;
+
+  --font-display-hero: "Geist", sans-serif;
+  --font-display-hero-mobile: "Geist", sans-serif;
+  --font-headline-lg: "Geist", sans-serif;
+  --font-headline-lg-mobile: "Geist", sans-serif;
+  --font-headline-md: "Geist", sans-serif;
+  --font-body-lg: "Inter", sans-serif;
+  --font-body-md: "Inter", sans-serif;
+  --font-body-sm: "Inter", sans-serif;
+  --font-mono-data: "JetBrains Mono", monospace;
+  --font-label-stamp: "JetBrains Mono", monospace;
+  --font-label-micro: "JetBrains Mono", monospace;
+
+  --spacing-space-xs: 0.25rem;
+  --spacing-space-sm: 0.5rem;
+  --spacing-space-md: 0.75rem;
+  --spacing-space-lg: 1.25rem;
+  --spacing-space-xl: 2rem;
+  --spacing-gutter: 1rem;
+  --spacing-gutter-desktop: 1.5rem;
+  --spacing-margin: 1rem;
+  --spacing-margin-tablet: 1.5rem;
+  --spacing-margin-desktop: 2.5rem;
 }
+
+@layer base {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background);
+    color: var(--color-on-surface);
+  }
+  body {
+    overscroll-behavior: none;
+  }
+  main > :first-child { margin-top: 0 !important; }
+  main > :last-child { margin-bottom: 0 !important; }
+
+  ::-webkit-scrollbar { display: none; }
+}
+
+@layer utilities {
+  .passport-guilloche {
+    background-image: radial-gradient(circle at 50% 30%, rgba(149, 243, 190, 0.04) 0%, transparent 65%),
+                      radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 100% 100%, 20px 20px;
+  }
+  .passport-shimmer {
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 40%, rgba(149,243,190,0.06) 60%, rgba(255,255,255,0.02) 100%);
+  }
+}
+
+/* Animations */
+@keyframes float-subtle-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-4px, -8px); }
+}
+@keyframes float-subtle-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(6px, -6px); }
+}
+@keyframes float-subtle-3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5px, 6px); }
+}
+@keyframes float-subtle-4 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(5px, 7px); }
+}
+@keyframes pulse-emerald {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+@keyframes slow-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes reverse-rotate {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+@keyframes laserSweep {
+  0% { top: 0%; opacity: 0.2; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0.2; }
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 4px #95f3be); }
+  50% { opacity: 0.95; filter: drop-shadow(0 0 12px #95f3be); }
+}
+@keyframes dashFlow {
+  to { stroke-dashoffset: -40; }
+}
+@keyframes pulse-flow-emerald {
+  0% { stroke-dashoffset: 60; opacity: 0.2; }
+  50% { opacity: 0.95; }
+  100% { stroke-dashoffset: 0; opacity: 0.2; }
+}
+@keyframes pulse-flow-terracotta {
+  0% { stroke-dashoffset: 60; opacity: 0.2; }
+  50% { opacity: 0.9; }
+  100% { stroke-dashoffset: 0; opacity: 0.2; }
+}
+@keyframes aura-glow {
+  0%, 100% { transform: scale(1); opacity: 0.35; }
+  50% { transform: scale(1.08); opacity: 0.6; }
+}
+
+.node-float-1 { animation: float-subtle-1 7s ease-in-out infinite; }
+.node-float-2 { animation: float-subtle-2 8.5s ease-in-out infinite; }
+.node-float-3 { animation: float-subtle-3 9s ease-in-out infinite; }
+.node-float-4 { animation: float-subtle-4 7.8s ease-in-out infinite; }
+.ambient-glow { animation: pulse-emerald 6s ease-in-out infinite; }
+.orbit-slow-spin { animation: slow-rotate 160s linear infinite; }
+.orbit-cw-slow { animation: slow-rotate 140s linear infinite; }
+.orbit-ccw-slow { animation: reverse-rotate 190s linear infinite; }
+.center-aura { animation: aura-glow 6s ease-in-out infinite; }
+.laser-line { animation: laserSweep 4.5s ease-in-out infinite alternate; }
+.flow-stream { stroke-dasharray: 6 6; animation: dashFlow 1.8s linear infinite; }
+.animate-flow-emerald { stroke-dasharray: 6, 24; animation: pulse-flow-emerald 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+.animate-flow-terracotta { stroke-dasharray: 6, 24; animation: pulse-flow-terracotta 4s cubic-bezier(0.4, 0, 0.2, 1) infinite; }

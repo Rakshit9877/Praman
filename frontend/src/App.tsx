@@ -1,35 +1,31 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import React, { Suspense } from 'react';
+import { Layout } from './components/Layout';
 
-// Lazy loaded routes (will be implemented by other agents)
-const WorkerHome = React.lazy(() => import('./features/worker/Home').catch(() => ({ default: () => <div>Worker Home Stub</div> })));
-const VoiceFlow = React.lazy(() => import('./features/worker/VoiceFlow').catch(() => ({ default: () => <div>Voice Flow Stub</div> })));
-const RegisterFlow = React.lazy(() => import('./features/worker/RegisterFlow').catch(() => ({ default: () => <div>Register Flow Stub</div> })));
-const PassportView = React.lazy(() => import('./features/worker/PassportView').catch(() => ({ default: () => <div>Passport View Stub</div> })));
-
-const AttestView = React.lazy(() => import('./features/attest/AttestView').catch(() => ({ default: () => <div>Attest View Stub</div> })));
-const VerifyView = React.lazy(() => import('./features/verify/VerifyView').catch(() => ({ default: () => <div>Verify View Stub</div> })));
+// Lazy loaded routes
+const ProductHero = React.lazy(() => import('./features/worker/ProductHero').then(m => ({ default: m.ProductHero })));
+const PassportView = React.lazy(() => import('./features/worker/PassportView').then(m => ({ default: m.PassportView })));
+const ProofChainView = React.lazy(() => import('./features/verify/ProofChainView').then(m => ({ default: m.ProofChainView })));
+const TimelineView = React.lazy(() => import('./features/verify/TimelineView').then(m => ({ default: m.TimelineView })));
+const ScannerView = React.lazy(() => import('./features/attest/ScannerView').then(m => ({ default: m.ScannerView })));
+const EvidenceWebView = React.lazy(() => import('./features/verify/EvidenceWebView').then(m => ({ default: m.EvidenceWebView })));
 
 function App() {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/worker" replace />} />
-          
-          <Route path="/worker">
-            <Route index element={<WorkerHome />} />
-            <Route path="voice" element={<VoiceFlow />} />
-            <Route path="register" element={<RegisterFlow />} />
-            <Route path="passport" element={<PassportView />} />
-          </Route>
-          
-          <Route path="/attest/:token" element={<AttestView />} />
-          <Route path="/verify/:id" element={<VerifyView />} />
-          
-          <Route path="*" element={<div>404 Not Found</div>} />
-        </Routes>
-      </Suspense>
+      <Layout>
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-primary font-mono-data tracking-widest text-xs">INITIALIZING SECURE ENCLAVE...</div>}>
+          <Routes>
+            <Route path="/" element={<ProductHero />} />
+            <Route path="/passport" element={<PassportView />} />
+            <Route path="/proof-chain" element={<ProofChainView />} />
+            <Route path="/timeline" element={<TimelineView />} />
+            <Route path="/scanner" element={<ScannerView />} />
+            <Route path="/evidence-web" element={<EvidenceWebView />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </Layout>
     </BrowserRouter>
   );
 }
