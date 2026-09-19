@@ -1,0 +1,7 @@
+{
+  "payload_canonical": "{\"attested_sites\":0,\"claimed_years\":null,\"evidenced_span_years\":0.1,\"flags\":[],\"issued_at\":\"2026-09-19T19:48:45.961303Z\",\"issuer\":\"Praman (hackathon demo)\",\"passport_id\":\"pass-123\",\"records\":[{\"city\":null,\"days_worked\":26.0,\"employer_name\":null,\"evidence\":\"register\",\"origin\":\"live\",\"period_from\":\"2026-01-01\",\"period_to\":\"2026-01-31\",\"role\":null,\"site_name\":\"Test Site\"}],\"schema_version\":\"1.0\",\"trust\":{\"breakdown\":{\"coverage\":40.0},\"class_reason\":\"Passed\",\"level\":\"high\",\"score\":80,\"suggested_class\":\"skilled\"},\"verified_days\":26.0,\"verified_sites\":1,\"wage_bands\":{\"A\":{\"area\":\"A\",\"daily_wage\":1008.0,\"delta_pct\":21.8,\"delta_per_day\":181.0,\"effective_from\":\"2026-04-01\",\"effective_to\":\"2026-09-30\",\"monthly_delta_26d\":4706.0,\"source\":\"Test\",\"suggested_class\":\"skilled\",\"unskilled_daily_wage\":827.0}},\"worker\":{\"display_name\":\"Rakesh\",\"trade\":\"mason\",\"worker_ref\":\"ref-123\"}}",
+  "signature_b64": "2IXpaLW+zvkts5SCq7v0mJnOFJdDp5DG9CSM+UuvWrSqLhB6lCpNhmCj00zCmB+i/P6tKwaotAOPt80n3rw7BA==",
+  "key_id": "4334b749",
+  "public_key_b64": "YSsKhbl341iL9PP7OzR9EnriZ2UA1jseN3nvC7JDdfI=",
+  "verify_url": "http://localhost:5173/verify/pass-123"
+}

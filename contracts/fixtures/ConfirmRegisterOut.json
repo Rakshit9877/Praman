@@ -1,0 +1,29 @@
+{
+  "record": {
+    "record_id": "rec-1",
+    "worker_id": "w-123",
+    "site_name": "Test Site",
+    "employer_name": null,
+    "city": null,
+    "role": null,
+    "period_from": "2026-01-01",
+    "period_to": "2026-01-31",
+    "days_worked": 26.0,
+    "day_marks": {},
+    "evidence": "register",
+    "origin": "live",
+    "image_id": null,
+    "cells_confirmed_by_worker": 0,
+    "cells_auto_accepted": 0,
+    "attestation_id": null,
+    "attestation_status": null
+  },
+  "report": {
+    "verified_days": 26.0,
+    "verified_sites": 1,
+    "attested_sites": 0,
+    "evidenced_span_years": 0.1,
+    "claimed_years": null,
+    "flags": []
+  }
+}
