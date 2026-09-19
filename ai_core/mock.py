@@ -48,12 +48,12 @@ def _minimal_register_extraction(image_path: str) -> dict:
         "extraction_id": eid,
         "image_id": "mock_" + eid[:8],
         "image_url": None,
-        "image_width": 800,
-        "image_height": 600,
+        "image_width": 1000,
+        "image_height": 1000,
         "header": {
-            "site_name":       {"value": "Adarsh Nagar Site", "confidence": 0.9, "needs_confirmation": False, "alternatives": []},
-            "contractor_name": {"value": "Sunil Kumar", "confidence": 0.9, "needs_confirmation": False, "alternatives": []},
-            "month":           {"value": "3", "confidence": 1.0, "needs_confirmation": False, "alternatives": []},
+            "site_name":       {"value": "Mohali Sector 82", "confidence": 1.0, "needs_confirmation": False, "alternatives": []},
+            "contractor_name": {"value": "Sunil", "confidence": 1.0, "needs_confirmation": False, "alternatives": []},
+            "month":           {"value": "7", "confidence": 1.0, "needs_confirmation": False, "alternatives": []},
             "year":            {"value": "2026", "confidence": 1.0, "needs_confirmation": False, "alternatives": []},
         },
         "rows": [
@@ -66,14 +66,14 @@ def _minimal_register_extraction(image_path: str) -> dict:
                 "bbox": None,
                 "cells": [
                     {"day": d, "mark": "P", "confidence": 1.0, "needs_confirmation": False, "alternatives": [], "reasons": []}
-                    for d in range(1, 27)
+                    for d in range(1, 25)
                 ] + [
-                    {"day": 27, "mark": "?", "confidence": 0.5, "needs_confirmation": True, "alternatives": ["P", "A"], "reasons": ["readers_disagree"]},
-                    {"day": 28, "mark": "?", "confidence": 0.5, "needs_confirmation": True, "alternatives": ["P", "A"], "reasons": ["readers_disagree"]},
+                    {"day": 25, "mark": "?", "confidence": 0.5, "needs_confirmation": True, "alternatives": ["P", "A"], "reasons": ["readers_disagree"]},
+                    {"day": 26, "mark": "?", "confidence": 0.5, "needs_confirmation": True, "alternatives": ["P", "A"], "reasons": ["readers_disagree"]},
                 ],
                 "written_total": 26.0,
-                "computed_total": 26.0,
-                "total_consistent": True,
+                "computed_total": 24.0,
+                "total_consistent": False,
             }
         ],
         "n_samples": 2,
@@ -109,19 +109,19 @@ def _minimal_work_record(worker_id: str) -> dict:
     return {
         "record_id": str(uuid.uuid4()),
         "worker_id": worker_id,
-        "site_name": "Adarsh Nagar Site",
-        "employer_name": "Sunil Kumar",
-        "city": "Delhi",
+        "site_name": "Mohali Sector 82",
+        "employer_name": "Sunil",
+        "city": "Mohali",
         "role": "mason",
-        "period_from": "2026-03-01",
-        "period_to": "2026-03-28",
+        "period_from": "2026-07-01",
+        "period_to": "2026-07-26",
         "days_worked": 26.0,
-        "day_marks": {f"2026-03-{d:02d}": "P" for d in range(1, 27)},
+        "day_marks": {f"2026-07-{d:02d}": "P" for d in range(1, 27)},
         "evidence": "register",
         "origin": "live",
         "image_id": "mock_image",
         "cells_confirmed_by_worker": 2,
-        "cells_auto_accepted": 26,
+        "cells_auto_accepted": 24,
         "attestation_id": None,
         "attestation_status": None,
     }
