@@ -98,7 +98,7 @@ export function ProductHero() {
             <line stroke="#434c47" strokeWidth="1.5" x1="564" x2="572" y1="360" y2="360"></line>
           </svg>
 
-          {/* FLOATING PROOF NODES */}
+          {/* FLOATING PRAMAN NODES */}
           <div className="node-float-1 absolute top-[12%] left-[4%] sm:left-[8%] md:left-[9%] z-20 flex items-center gap-3 cursor-pointer group">
             <div className="flex flex-col text-left">
               <span className="font-display-hero text-xl sm:text-2xl md:text-[28px] font-medium text-[#F5F3ED] tracking-tight group-hover:text-primary transition-colors duration-200">10+ YEARS</span>

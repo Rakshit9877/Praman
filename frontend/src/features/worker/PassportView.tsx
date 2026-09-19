@@ -83,7 +83,7 @@ export function PassportView() {
             <div className="relative z-10 flex items-start justify-between w-full pb-6">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-label-stamp text-xs font-bold tracking-[0.25em] text-primary uppercase">PROOF</span>
+                  <span className="font-label-stamp text-xs font-bold tracking-[0.25em] text-primary uppercase">PRAMAN</span>
                   <span className="text-white/20 font-mono-data text-xs">/</span>
                   <span className="font-label-micro text-[10px] tracking-[0.2em] text-on-surface-variant uppercase font-medium">SOVEREIGN PASSPORT</span>
                 </div>
@@ -193,7 +193,7 @@ export function PassportView() {
             <div className="relative z-10 pt-4 border-t border-white/[0.07] flex items-center justify-between">
               <div className="flex flex-col">
                 <span className="font-label-stamp text-[8px] text-outline/80 uppercase tracking-widest">DECENTRALIZED ID</span>
-                <span className="font-mono-data text-xs text-white tracking-widest mt-0.5">DID:PROOF:9812-441-A</span>
+                <span className="font-mono-data text-xs text-white tracking-widest mt-0.5">DID:PRAMAN:9812-441-A</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex flex-col items-end">

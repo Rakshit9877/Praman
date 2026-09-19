@@ -14,7 +14,7 @@ export function ProofChainView() {
           
           <h1 className="font-display-hero text-4xl sm:text-[46px] font-medium tracking-tight text-[#F5F3ED] uppercase leading-[1.05] mb-5">
             THE CONTINUOUS<br />
-            <span className="text-primary font-semibold">PROOF CHAIN.</span>
+            <span className="text-primary font-semibold">PRAMAN CHAIN.</span>
           </h1>
           
           <p className="font-body-lg text-[15px] sm:text-base text-on-surface-variant/90 leading-relaxed mb-8">
