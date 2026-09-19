@@ -1,0 +1,70 @@
+{
+  "job_id": "j-1",
+  "kind": "register",
+  "status": "done",
+  "stage": "",
+  "progress": 0.0,
+  "result": {
+    "extraction_id": "ext-1",
+    "image_id": "img-1",
+    "image_url": null,
+    "image_width": null,
+    "image_height": null,
+    "header": {
+      "site_name": {
+        "value": "Test",
+        "confidence": 1.0,
+        "needs_confirmation": false,
+        "alternatives": []
+      },
+      "contractor_name": {
+        "value": "Test",
+        "confidence": 1.0,
+        "needs_confirmation": false,
+        "alternatives": []
+      },
+      "month": {
+        "value": "1",
+        "confidence": 1.0,
+        "needs_confirmation": false,
+        "alternatives": []
+      },
+      "year": {
+        "value": "2026",
+        "confidence": 1.0,
+        "needs_confirmation": false,
+        "alternatives": []
+      }
+    },
+    "rows": [
+      {
+        "row_index": 1,
+        "name_raw": "Rakesh",
+        "name_latin": null,
+        "name_match_score": 0.0,
+        "is_target": false,
+        "bbox": null,
+        "cells": [
+          {
+            "day": 1,
+            "mark": "P",
+            "confidence": 0.9,
+            "needs_confirmation": false,
+            "alternatives": [],
+            "reasons": []
+          }
+        ],
+        "written_total": null,
+        "computed_total": 1.0,
+        "total_consistent": null
+      }
+    ],
+    "n_samples": 3,
+    "models": [
+      "m1"
+    ],
+    "warnings": [],
+    "elapsed_s": 0.0
+  },
+  "error": null
+}
