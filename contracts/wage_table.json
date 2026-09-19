@@ -1,0 +1,10 @@
+{
+  "effective_from": "2026-04-01",
+  "effective_to": "2026-09-30",
+  "source": "Central sphere minimum wages, construction (as relayed by compliance site; VERIFY against labour.gov.in before demo)",
+  "areas": {
+    "A": {"unskilled": 827, "semi_skilled": null, "skilled": 1008, "highly_skilled": null},
+    "B": {"unskilled": 693, "semi_skilled": null, "skilled": 918,  "highly_skilled": null},
+    "C": {"unskilled": 556, "semi_skilled": null, "skilled": 781,  "highly_skilled": null}
+  }
+}

@@ -1,0 +1,12 @@
+.env
+*.key
+.venv/
+__pycache__/
+.pytest_cache/
+node_modules/
+frontend/dist/
+.cache/
+backend/*.db
+backend/uploads/
+eval/out/*.tmp
+.DS_Store

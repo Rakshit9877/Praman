@@ -1,0 +1,17 @@
+{
+  "skilled_trades": ["mason","carpenter","bar_bender","plumber","electrician","painter","welder","tiler"],
+  "skill_thresholds": {
+    "skilled_min_days": 500,
+    "skilled_min_attested_sites": 1,
+    "semi_skilled_min_days": 120
+  },
+  "trust": {
+    "coverage_full_days": 720,
+    "weights": {"coverage": 40, "attestation": 30, "consistency": 20, "claim_alignment": 10}
+  },
+  "work_days_per_year": 260,
+  "work_days_per_month": 26,
+  "confirm_below_agreement": 1.0,
+  "name_match_min": 0.6,
+  "note": "Thresholds are illustrative policy parameters, not a legal classification."
+}
