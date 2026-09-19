@@ -1,0 +1,14 @@
+pydantic>=2
+pydantic-settings
+anthropic
+google-genai
+tenacity
+pillow
+rapidfuzz
+faster-whisper
+numpy
+pandas
+matplotlib
+pytest
+pytest-asyncio
+python-dotenv
