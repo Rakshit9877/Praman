@@ -61,7 +61,7 @@ def create_session():
     return session
 
 @app.post("/api/voice")
-def post_voice(
+async def post_voice(
     audio: UploadFile = File(None),
     worker_id: str = Form(...),
     transcript_override: str = Form(None)
@@ -86,7 +86,7 @@ def post_voice(
     return {"job_id": job_id}
 
 @app.post("/api/registers")
-def post_registers(
+async def post_registers(
     image: UploadFile = File(...),
     worker_id: str = Form(...),
     target_name: str = Form(None)
