@@ -10,3 +10,5 @@ backend/*.db
 backend/uploads/
 eval/out/*.tmp
 .DS_Store
+
+backend/data/
