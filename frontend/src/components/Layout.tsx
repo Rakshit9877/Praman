@@ -26,14 +26,14 @@ export function Layout({ children }: LayoutProps) {
             <div className="w-8 h-8 rounded border border-primary/40 flex items-center justify-center bg-primary/5 text-primary transition-transform duration-300 group-hover:scale-105">
               <span className="font-mono-data font-bold text-sm tracking-tighter">PR</span>
             </div>
-            <span className="font-display-hero text-base font-semibold tracking-[0.2em] text-[#F5F3ED] uppercase">PROOF</span>
+            <span className="font-display-hero text-base font-semibold tracking-[0.2em] text-[#F5F3ED] uppercase">PRAMAN</span>
           </Link>
 
           {/* Minimal Navigation Links */}
           <nav className="hidden lg:flex items-center gap-7 h-full">
             <Link to="/" className={getNavClass('/')}>PRODUCT</Link>
             <Link to="/passport" className={getNavClass('/passport')}>PASSPORT</Link>
-            <Link to="/proof-chain" className={getNavClass('/proof-chain')}>PROOF CHAIN</Link>
+            <Link to="/proof-chain" className={getNavClass('/proof-chain')}>PRAMAN CHAIN</Link>
             <Link to="/scanner" className={getNavClass('/scanner')}>SCANNER</Link>
             <Link to="/evidence-web" className={getNavClass('/evidence-web')}>EVIDENCE WEB</Link>
             <Link to="/timeline" className={getNavClass('/timeline')}>TIMELINE</Link>
@@ -68,7 +68,7 @@ export function Layout({ children }: LayoutProps) {
       <footer className="w-full bg-[#070808] border-t border-[#242927] py-6 select-none relative z-10">
         <div className="max-w-7xl mx-auto px-6 md:px-10 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-mono-data text-xs text-[#737A75] tracking-widest uppercase">PROOF // PORTABLE WORK IDENTITY</span>
+            <span className="font-mono-data text-xs text-[#737A75] tracking-widest uppercase">PRAMAN // PORTABLE WORK IDENTITY</span>
           </div>
           <div className="flex items-center gap-2 border border-[#242927] bg-[#0d0f0e] px-3.5 py-1 rounded-full">
             <span className="material-symbols-outlined text-primary text-xs">lock</span>
