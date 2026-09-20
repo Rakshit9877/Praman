@@ -800,16 +800,19 @@ function PassportStep({
 
 // ─── VerifyStep ───────────────────────────────────────────────────────────────
 
+type VerificationState = 'neutral' | 'valid' | 'tampered';
+
 function VerifyStep({ passport }: { passport: SignedPassport }) {
-  // Always start neutral — no auto-run
-  const [status, setStatus] = useState<'valid' | 'tampered' | null>(null);
+  const [verificationState, setVerificationState] = useState<VerificationState>('neutral');
   const [tamperedPayload, setTamperedPayload] = useState<string | null>(null);
 
-  const verify = useCallback(
-    (payloadStr: string, sigB64: string): boolean => {
+  const originalPayloadCanonical = passport.payload_canonical;
+  const originalSignatureB64 = passport.signature_b64;
+  const pinnedPublicKey = (import.meta.env.VITE_PRAMAN_PUBKEY as string | undefined) || passport.public_key_b64;
+
+  const verifySignature = useCallback(
+    (payloadStr: string, sigB64: string, pubKeyB64: string): boolean => {
       try {
-        const pinnedKey = import.meta.env.VITE_PRAMAN_PUBKEY as string | undefined;
-        const pubKeyB64 = pinnedKey || passport.public_key_b64;
         const pubKey = decodeBase64(pubKeyB64);
         const sig = decodeBase64(sigB64);
         const msg = new TextEncoder().encode(payloadStr);
@@ -818,45 +821,56 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
         return false;
       }
     },
-    [passport.public_key_b64]
+    []
   );
 
-  const handleVerify = () => {
-    const ok = verify(passport.payload_canonical, passport.signature_b64);
-    setStatus(ok ? 'valid' : 'tampered');
+  const verifyOriginalPassport = () => {
+    const ok = verifySignature(
+      originalPayloadCanonical,
+      originalSignatureB64,
+      pinnedPublicKey
+    );
+    // If it fails unexpectedly, it remains neutral (could show an error, but as requested we set to valid or neutral).
+    setVerificationState(ok ? 'valid' : 'neutral');
     setTamperedPayload(null);
   };
 
-  const handleTamper = () => {
+  const simulateTampering = () => {
+    if (verificationState !== 'valid') return;
+
     try {
-      const parsed = JSON.parse(passport.payload_canonical);
-      parsed.verified_days = (parsed.verified_days ?? 0) + 999;
-      const tampered = JSON.stringify(parsed, Object.keys(parsed).sort());
-      setTamperedPayload(tampered);
-      const ok = verify(tampered, passport.signature_b64);
-      setStatus(ok ? 'valid' : 'tampered');
+      const parsed = JSON.parse(originalPayloadCanonical);
+      parsed.verified_days = Number(parsed.verified_days || 0) + 999;
+      const tamperedCanonical = JSON.stringify(parsed, Object.keys(parsed).sort());
+      
+      const ok = verifySignature(
+        tamperedCanonical,
+        originalSignatureB64,
+        pinnedPublicKey
+      );
+      
+      setTamperedPayload(tamperedCanonical);
+      setVerificationState(ok ? 'valid' : 'tampered');
     } catch {
-      setStatus('tampered');
+      setVerificationState('tampered');
     }
   };
 
-  // Reset returns to neutral — not auto-valid
-  const handleReset = () => {
-    setStatus(null);
+  const resetVerification = () => {
+    setVerificationState('neutral');
     setTamperedPayload(null);
   };
 
-  const isValidAndUntampered = status === 'valid' && !tamperedPayload;
-  const displayPayload = tamperedPayload ?? passport.payload_canonical;
+  const displayPayload = tamperedPayload ?? originalPayloadCanonical;
 
   return (
     <div className="flex-1 flex flex-col gap-5 animate-in slide-in-from-right duration-300">
       <div className="space-y-1">
         <Eyebrow>Cryptographic verification</Eyebrow>
         <h2 className="text-2xl font-bold">
-          {status === null && 'Ed25519 browser verification'}
-          {isValidAndUntampered && 'Signature valid ✓'}
-          {status === 'tampered' && 'Signature invalid ✕'}
+          {verificationState === 'neutral' && 'Ed25519 browser verification'}
+          {verificationState === 'valid' && 'Signature valid ✓'}
+          {verificationState === 'tampered' && 'Signature invalid ✕'}
         </h2>
         <p className="text-neutral-400 text-sm">
           Ed25519 signature — verified independently in your browser. No database lookup required.
@@ -864,15 +878,15 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
       </div>
 
       {/* ── Pre-verification: neutral ── */}
-      {status === null && (
+      {verificationState === 'neutral' && (
         <>
           <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-2">
             <Eyebrow>Signed payload — first 120 chars</Eyebrow>
             <p className="font-mono text-xs text-neutral-500 break-all leading-relaxed">
-              {passport.payload_canonical.slice(0, 120)}…
+              {originalPayloadCanonical.slice(0, 120)}…
             </p>
           </div>
-          <Btn onClick={handleVerify}>Verify passport</Btn>
+          <Btn onClick={verifyOriginalPassport}>Verify passport</Btn>
           <Caption>
             Decodes the Ed25519 signature and pinned public key in this browser tab — no server call.
           </Caption>
@@ -880,7 +894,7 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
       )}
 
       {/* ── Valid state ── */}
-      {isValidAndUntampered && (
+      {verificationState === 'valid' && (
         <>
           <div className="bg-green-500/10 border-2 border-green-400 rounded-2xl p-6 text-center space-y-2 animate-in fade-in duration-300">
             <p className="text-5xl">✅</p>
@@ -895,11 +909,11 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
           <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 space-y-1">
             <Eyebrow>Signed payload — first 120 chars</Eyebrow>
             <p className="font-mono text-xs text-neutral-500 break-all leading-relaxed">
-              {passport.payload_canonical.slice(0, 120)}…
+              {originalPayloadCanonical.slice(0, 120)}…
             </p>
           </div>
 
-          <Btn onClick={handleTamper} variant="danger-outline">
+          <Btn onClick={simulateTampering} variant="danger-outline">
             Simulate tampering (+999 days)
           </Btn>
           <Caption>Modifies verified_days in a local copy, then re-verifies with the original signature.</Caption>
@@ -907,7 +921,7 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
       )}
 
       {/* ── Tampered / Invalid state ── */}
-      {status === 'tampered' && (
+      {verificationState === 'tampered' && (
         <>
           <div className="bg-red-500/10 border-2 border-red-500 rounded-2xl p-6 text-center space-y-2 animate-in fade-in duration-300">
             <p className="text-5xl">🔴</p>
@@ -928,9 +942,9 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
       )}
 
       {/* Reset — always shown after any verification */}
-      {status !== null && (
+      {verificationState !== 'neutral' && (
         <>
-          <Btn onClick={handleReset} variant="ghost">
+          <Btn onClick={resetVerification} variant="ghost">
             Reset verification
           </Btn>
           <Caption>Returns to neutral pre-verification state.</Caption>
