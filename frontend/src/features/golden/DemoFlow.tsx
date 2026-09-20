@@ -436,7 +436,7 @@ function MainFlow() {
                 <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-500">Mic</span>
               </button>
               <p className="text-xs text-neutral-500 text-center">
-                Production path: record a 15-second Hindi/Hinglish work-history note.
+                Production: record a Hindi/Hinglish work-history note.
               </p>
               {micMsg && (
                 <p className="text-xs text-amber-400 text-center bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-2">
@@ -507,7 +507,7 @@ function MainFlow() {
               AI reads the hazri register — and asks when uncertain
             </h2>
             <p className="text-neutral-400 text-sm">
-              Two independent readings agree on clear marks. Ambiguous marks are routed to the worker, never silently guessed.
+              Two independent readings agree on clear marks. Ambiguous marks are routed to the worker, never guessed.
             </p>
           </div>
 
@@ -591,6 +591,10 @@ function MainFlow() {
           {/* Uncertainty explanation card */}
           {!cellsConfirmed && flaggedCells.length > 0 && (
             <div className="bg-amber-500/8 border border-amber-500/25 rounded-xl p-3 space-y-1">
+              <p className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-amber-400">
+                <span className="w-3 h-3 rounded bg-amber-500/25 border border-amber-400 inline-block" />
+                Needs Rakesh&apos;s confirmation
+              </p>
               <p className="text-amber-300 text-xs font-semibold">
                 ⚠ {flaggedCells.length} cells need Rakesh's confirmation — days {flaggedCells.map((c) => c.day).join(', ')}
               </p>
@@ -741,7 +745,7 @@ function PassportStep({
         <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
           <Eyebrow>Verified Days</Eyebrow>
           <p className="text-2xl font-bold text-green-400 mt-1">{verifiedDays}</p>
-          <p className="text-[10px] text-neutral-600 mt-1">4 seeded + 1 live</p>
+          <p className="text-[10px] text-neutral-600 mt-1">4 prior seeded demo records + 1 live register record</p>
         </div>
         <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-4 text-center">
           <Eyebrow>Verified Sites</Eyebrow>
@@ -800,68 +804,91 @@ function PassportStep({
 
 // ─── VerifyStep ───────────────────────────────────────────────────────────────
 
-type VerificationState = 'neutral' | 'valid' | 'tampered';
+type VerificationState = 'neutral' | 'valid' | 'tampered' | 'error';
+
+/** Recursively sorts object keys at every nesting level; array order is preserved. */
+function sortDeep(value: any): any {
+  if (Array.isArray(value)) return value.map(sortDeep);
+  if (value && typeof value === 'object') {
+    const out: Record<string, any> = {};
+    Object.keys(value).sort().forEach((k) => { out[k] = sortDeep(value[k]); });
+    return out;
+  }
+  return value;
+}
+
+/** Canonical JSON: deep key-sorted, no pretty spaces — matches the backend signer. */
+function canonicalize(value: any): string {
+  return JSON.stringify(sortDeep(value));
+}
+
+/** Ed25519 detached verification of a payload string against a base64 signature + key. */
+function verifyBytes(payloadCanonical: string, signatureB64: string, publicKeyB64: string): boolean {
+  const pubKey = decodeBase64(publicKeyB64);
+  const sig = decodeBase64(signatureB64);
+  const msg = new TextEncoder().encode(payloadCanonical);
+  return nacl.sign.detached.verify(msg, sig, pubKey);
+}
 
 function VerifyStep({ passport }: { passport: SignedPassport }) {
   const [verificationState, setVerificationState] = useState<VerificationState>('neutral');
+  const [verificationError, setVerificationError] = useState<string | null>(null);
   const [tamperedPayload, setTamperedPayload] = useState<string | null>(null);
 
-  const originalPayloadCanonical = passport.payload_canonical;
-  const originalSignatureB64 = passport.signature_b64;
-  const pinnedPublicKey = (import.meta.env.VITE_PRAMAN_PUBKEY as string | undefined) || passport.public_key_b64;
+  // Original signed data — never mutated.
+  const originalPayloadCanonical = passport?.payload_canonical ?? '';
+  const originalSignatureB64 = passport?.signature_b64 ?? '';
+  const envPubKey = (import.meta.env.VITE_PRAMAN_PUBKEY as string | undefined) ?? '';
+  const pinnedPublicKey = envPubKey.trim() !== '' ? envPubKey.trim() : passport?.public_key_b64 ?? '';
 
-  const verifySignature = useCallback(
-    (payloadStr: string, sigB64: string, pubKeyB64: string): boolean => {
-      try {
-        const pubKey = decodeBase64(pubKeyB64);
-        const sig = decodeBase64(sigB64);
-        const msg = new TextEncoder().encode(payloadStr);
-        return nacl.sign.detached.verify(msg, sig, pubKey);
-      } catch {
-        return false;
-      }
-    },
-    []
-  );
-
-  const verifyOriginalPassport = () => {
-    const ok = verifySignature(
-      originalPayloadCanonical,
-      originalSignatureB64,
-      pinnedPublicKey
-    );
-    // If it fails unexpectedly, it remains neutral (could show an error, but as requested we set to valid or neutral).
-    setVerificationState(ok ? 'valid' : 'neutral');
+  const handleVerifyPassport = () => {
+    setVerificationError(null);
     setTamperedPayload(null);
+    try {
+      if (!originalPayloadCanonical || !originalSignatureB64 || !pinnedPublicKey) {
+        throw new Error('Missing payload, signature or public key.');
+      }
+      if (verifyBytes(originalPayloadCanonical, originalSignatureB64, pinnedPublicKey)) {
+        setVerificationState('valid');
+        return;
+      }
+      setVerificationState('error');
+      setVerificationError(
+        `Signature did not verify against the pinned public key (${pinnedPublicKey.slice(0, 12)}…). ` +
+        `The passport was signed with key ${passport.key_id}.`
+      );
+    } catch (err: any) {
+      setVerificationState('error');
+      setVerificationError(err?.message || 'Verification could not be performed.');
+    }
   };
 
-  const simulateTampering = () => {
+  const handleTamper = () => {
     if (verificationState !== 'valid') return;
-
     try {
-      const parsed = JSON.parse(originalPayloadCanonical);
-      parsed.verified_days = Number(parsed.verified_days || 0) + 999;
-      const tamperedCanonical = JSON.stringify(parsed, Object.keys(parsed).sort());
-      
-      const ok = verifySignature(
-        tamperedCanonical,
-        originalSignatureB64,
-        pinnedPublicKey
-      );
-      
+      const copied = JSON.parse(originalPayloadCanonical);
+      copied.verified_days = Number(copied.verified_days ?? 0) + 999;
+      const tamperedCanonical = canonicalize(copied);
+      const ok = verifyBytes(tamperedCanonical, originalSignatureB64, pinnedPublicKey);
       setTamperedPayload(tamperedCanonical);
-      setVerificationState(ok ? 'valid' : 'tampered');
-    } catch {
+      if (ok) {
+        setVerificationState('error');
+        setVerificationError('Tampered payload still verified — this should be impossible.');
+        return;
+      }
+      setVerificationError(null);
       setVerificationState('tampered');
+    } catch (err: any) {
+      setVerificationState('error');
+      setVerificationError(err?.message || 'Tamper simulation failed.');
     }
   };
 
   const resetVerification = () => {
     setVerificationState('neutral');
     setTamperedPayload(null);
+    setVerificationError(null);
   };
-
-  const displayPayload = tamperedPayload ?? originalPayloadCanonical;
 
   return (
     <div className="flex-1 flex flex-col gap-5 animate-in slide-in-from-right duration-300">
@@ -871,6 +898,7 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
           {verificationState === 'neutral' && 'Ed25519 browser verification'}
           {verificationState === 'valid' && 'Signature valid ✓'}
           {verificationState === 'tampered' && 'Signature invalid ✕'}
+          {verificationState === 'error' && 'Verification error'}
         </h2>
         <p className="text-neutral-400 text-sm">
           Ed25519 signature — verified independently in your browser. No database lookup required.
@@ -886,7 +914,7 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
               {originalPayloadCanonical.slice(0, 120)}…
             </p>
           </div>
-          <Btn onClick={verifyOriginalPassport}>Verify passport</Btn>
+          <Btn onClick={handleVerifyPassport}>Verify passport</Btn>
           <Caption>
             Decodes the Ed25519 signature and pinned public key in this browser tab — no server call.
           </Caption>
@@ -913,7 +941,7 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
             </p>
           </div>
 
-          <Btn onClick={simulateTampering} variant="danger-outline">
+          <Btn onClick={handleTamper} variant="danger-outline">
             Simulate tampering (+999 days)
           </Btn>
           <Caption>Modifies verified_days in a local copy, then re-verifies with the original signature.</Caption>
@@ -935,10 +963,20 @@ function VerifyStep({ passport }: { passport: SignedPassport }) {
           <div className="bg-neutral-900 border border-red-500/20 rounded-xl p-4 space-y-1">
             <Eyebrow>Tampered payload — first 120 chars</Eyebrow>
             <p className="font-mono text-xs text-red-400/70 break-all leading-relaxed">
-              {displayPayload.slice(0, 120)}…
+              {(tamperedPayload ?? '').slice(0, 120)}…
             </p>
           </div>
         </>
+      )}
+
+      {/* ── Error state — honest failure, never rendered as "invalid" ── */}
+      {verificationState === 'error' && (
+        <div className="bg-amber-500/10 border border-amber-500/40 rounded-2xl p-5 space-y-2">
+          <p className="text-amber-300 font-bold text-sm">Verification could not be completed</p>
+          <p className="text-xs text-neutral-400 leading-snug break-all">
+            {verificationError ?? 'Unknown verification error.'}
+          </p>
+        </div>
       )}
 
       {/* Reset — always shown after any verification */}

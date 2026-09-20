@@ -7,6 +7,18 @@ from pydantic import BaseModel
 import nacl.signing
 import nacl.encoding
 
+# Load the repository-root .env so PRAMAN_SIGNING_SEED_B64 is available even when
+# uvicorn is started without exporting it. Existing env vars always win.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(
+        os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
+        override=False,
+    )
+except Exception:  # pragma: no cover - dotenv is optional
+    pass
+
 def canonicalize(model_or_dict: Any) -> str:
     """
     Returns the exact UTF-8 JSON string that will be signed.
